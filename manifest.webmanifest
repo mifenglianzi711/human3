@@ -1,0 +1,18 @@
+{
+  "name": "Human 3.0 人生测试与执行系统",
+  "short_name": "Human 3.0",
+  "description": "基于 Human 3.0 框架的本地自我测试、报告与 AI 追问工具。",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#121417",
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

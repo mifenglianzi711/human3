@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="基于 Dan Koe HUMAN 3.0 框架的本地自我测试与人生执行系统。"
+    />
+    <meta name="theme-color" content="#121417" />
+    <title>Human 3.0 人生测试与执行系统</title>
+    <link rel="icon" href="data:," />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#entry" aria-label="返回首页">
+        <span>HUMAN</span>
+        <strong>3.0</strong>
+      </a>
+      <nav class="site-nav" aria-label="主导航">
+        <button type="button" data-view-target="entry">首页</button>
+        <button type="button" data-view-target="dashboard">方法论</button>
+        <button type="button" data-view-target="sources">原文来源</button>
+        <button type="button" class="nav-primary" data-view-target="test">开始测试</button>
+      </nav>
+    </header>
+
+    <main>
+      <section id="entry" class="section entry-section" data-view="entry">
+        <div class="section-inner hero-layout">
+          <div class="hero-copy">
+            <h1>用 Human 3.0 看清你现在的位置，再决定下一步怎么走。</h1>
+            <p class="lead">
+              这不是心理诊断，也不是人格标签。它用四个象限、三个层级和行动复盘，
+              帮你看清当前约束，并把答案转成一段可以继续追问 AI 的提示词。
+            </p>
+            <div class="hero-actions">
+              <button id="start-test" class="button primary" type="button">开始测试</button>
+              <button id="view-dashboard" class="button secondary" type="button">
+                查看方法论
+              </button>
+            </div>
+          </div>
+
+          <aside id="privacy" class="privacy-panel" aria-labelledby="privacy-title">
+            <div class="privacy-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M7 10V8a5 5 0 0 1 10 0v2" />
+                <rect x="5" y="10" width="14" height="10" rx="2" />
+              </svg>
+            </div>
+            <div>
+              <h2 id="privacy-title">隐私声明</h2>
+              <p>
+                不需要登录，不需要服务器，不上传答案，不接统计脚本。答案默认只留在当前页面，
+                只有你主动点击“保存到本机”时，才会保存在你自己的浏览器里。
+              </p>
+              <p class="privacy-note">
+                只有你主动复制或导出内容时，内容才会离开当前网页。
+              </p>
+            </div>
+          </aside>
+
+          <div class="quadrant-preview" aria-label="四个评估象限">
+            <article>
+              <span>Mind</span>
+              <strong>心智</strong>
+              <p>认知、情绪、信念、自我意识。</p>
+            </article>
+            <article>
+              <span>Body</span>
+              <strong>身体</strong>
+              <p>健康、睡眠、运动、精力。</p>
+            </article>
+            <article>
+              <span>Spirit</span>
+              <strong>精神</strong>
+              <p>意义、关系、家庭、方向。</p>
+            </article>
+            <article>
+              <span>Vocation</span>
+              <strong>事业</strong>
+              <p>工作、收入、技能、系统。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="test" class="section test-section" data-view="test" hidden>
+        <div class="test-shell">
+          <div class="test-meta">
+            <p id="progress-text">第 1 题 / 共 23 题</p>
+            <div class="progress-track" aria-hidden="true">
+              <div id="progress-bar" class="progress-bar"></div>
+            </div>
+          </div>
+
+          <div id="question" class="question-panel" aria-live="polite"></div>
+
+          <div class="test-actions">
+            <button id="prev-question" class="button secondary" type="button">上一题</button>
+            <button id="skip-question" class="text-button" type="button">跳过</button>
+            <button id="save-local" class="text-button" type="button">保存到本机</button>
+            <button id="next-question" class="button primary" type="button">下一题</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="report" class="section report-section" data-view="report" hidden>
+        <div class="section-inner report-layout">
+          <div class="report-heading">
+            <h2>你的 Human 3.0 初步报告</h2>
+            <p>报告在你的浏览器本地生成。你可以复制、下载，或继续交给自己的 AI 追问。</p>
+          </div>
+
+          <article id="report-content" class="report-content"></article>
+
+          <div class="report-actions">
+            <button id="copy-report" class="button primary" type="button">复制报告</button>
+            <button id="copy-prompt" class="button secondary" type="button">
+              复制 AI 追问提示词
+            </button>
+            <button id="download-report" class="button secondary" type="button">
+              下载 Markdown
+            </button>
+            <button id="print-report" class="button secondary" type="button">
+              打印或保存 PDF
+            </button>
+            <button id="share-report" class="button secondary" type="button">
+              分享结果
+            </button>
+            <button id="copy-link" class="button secondary" type="button">
+              复制当前链接
+            </button>
+            <button id="export-json" class="button secondary" type="button">
+              导出测试记录
+            </button>
+            <button id="import-json" class="button secondary" type="button">
+              导入测试记录
+            </button>
+            <input id="import-file" type="file" accept="application/json" hidden />
+            <button id="clear-local" class="text-button danger" type="button">
+              清除本地记录
+            </button>
+          </div>
+
+          <div class="share-panel">
+            <div>
+              <h3>把结果带走</h3>
+              <p>
+                复制 AI 提示词后，打开你自己的 ChatGPT 或 Claude，粘贴并发送。
+                网页不会自动上传你的回答。
+              </p>
+            </div>
+            <div class="share-actions">
+              <button id="open-chatgpt" class="button primary" type="button">
+                打开 ChatGPT
+              </button>
+              <button id="open-claude" class="button secondary" type="button">
+                打开 Claude
+              </button>
+              <a
+                id="qr-link"
+                class="button secondary"
+                href="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=https%3A%2F%2Fexample.com"
+                target="_blank"
+                rel="noreferrer"
+              >
+                生成二维码
+              </a>
+            </div>
+          </div>
+
+          <textarea id="copy-fallback" class="copy-fallback" aria-label="复制内容备用区"></textarea>
+        </div>
+      </section>
+
+      <section id="dashboard" class="section dashboard-section" data-view="dashboard">
+        <div class="section-inner">
+          <div class="section-heading">
+            <h2>方法论</h2>
+            <p>先理解模型，再做测试，最后把结果变成一个最小行动。</p>
+          </div>
+
+          <section id="what-is-human3" class="content-block">
+            <p class="block-label">内容层 1</p>
+            <h3>Human 3.0 是什么</h3>
+            <p>
+              Human 3.0 用四个象限看人的发展：心智、身体、精神、事业。
+              每个象限都有 Level 1.0、2.0、3.0 三个层级，以及
+              Dissonance、Uncertainty、Discovery 三个阶段。
+            </p>
+            <ul class="plain-list">
+              <li><strong>Level 1.0</strong>：依赖外部权威和规则，按剧本生活。</li>
+              <li><strong>Level 2.0</strong>：建立个人目标，追求成就、能力和差异化。</li>
+              <li><strong>Level 3.0</strong>：整合多重观点，创造系统，重视贡献和长期复利。</li>
+            </ul>
+          </section>
+
+          <section id="core-logic" class="content-block">
+            <div>
+              <p class="block-label">内容层 2</p>
+              <h3>原文逻辑与可信度</h3>
+            </div>
+            <div class="logic-intro">
+              <p>
+                Human 3.0 不是一个凭空出现的人格测验。它把几套已经长期影响心理学、
+                哲学和成长研究的方法放到同一张地图里，再回答一个现实问题：
+                一个人如何在不同人生领域里，持续解决更复杂的问题。
+              </p>
+              <figure class="source-figure">
+                <a
+                  href="https://thedankoe.com/letters/human-3-0-a-map-to-reach-the-top-1/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <img
+                    src="assets/human3-map.png"
+                    alt="Dan Koe 的 Human 3.0 四象限、层级、阶段和特质总览图"
+                  />
+                </a>
+                <figcaption>
+                  <strong>图意翻译：</strong>
+                  四个方向分别代表心智、身体、精神、事业四个象限。中心红色是
+                  Human 1.0，中间蓝色是 Human 2.0，最外圈绿色是 Human 3.0。
+                  每个层级内部都要经历 Dissonance、Uncertainty、Discovery
+                  三个阶段；Knowledge、Experience、Skill 表示能力如何横向积累。
+                  图中的形状是一个人的发展组合，不是固定性格类型。图片来自 Dan Koe
+                  原文，版权归原作者所有。
+                </figcaption>
+              </figure>
+              <ul class="plain-list">
+                <li>
+                  <strong>四象限结构</strong>：受到 Ken Wilber 的 AQAL 模型影响，
+                  用心智、身体、精神、事业四个视角，避免只从一个维度解释人生。
+                </li>
+                <li>
+                  <strong>发展层级</strong>：参考 Spiral Dynamics、Loevinger 和
+                  Cook-Greuter 的自我发展阶段研究，用 Conformist、Individualist、
+                  Synthesist 描述不同的意义结构和行动方式。
+                </li>
+                <li>
+                  <strong>心流与成长</strong>：结合 Csikszentmihalyi 的心流研究，
+                  把成长看成挑战、能力和反馈之间的动态循环，而不是空泛的自我激励。
+                </li>
+                <li>
+                  <strong>问题解决路径</strong>：先识别主要约束，再应用最小有效剂量，
+                  观察一个象限的改变如何影响其他象限。
+                </li>
+                <li>
+                  <strong>阶段与特质</strong>：Dissonance、Uncertainty、Discovery
+                  描述转变过程；Knowledge、Experience、Skill 描述实际能力的形成。
+                </li>
+              </ul>
+              <p class="model-note">
+                它不是临床诊断，也不能替代医生、心理咨询或专业评估。它的价值在于提供一套
+                可讨论、可验证、可行动的语言，让你的现实问题不再只凭感觉判断。
+              </p>
+            </div>
+          </section>
+
+          <section id="assessment" class="content-block">
+            <p class="block-label">内容层 3</p>
+            <h3>四象限如何评估</h3>
+            <p>
+              评估不是给你贴标签，而是寻找可观察的行为证据。每个象限都同时看
+              Level 1.0、2.0、3.0 的特征，不把任何人固定在单一身份里。
+            </p>
+            <div class="assessment-table" role="table" aria-label="四象限评估">
+              <div class="assessment-row head" role="row">
+                <span>象限</span><span>主要观察</span><span>层级判断方式</span>
+              </div>
+              <div class="assessment-row" role="row">
+                <span>Mind 心智</span>
+                <span>认知、情绪、信念、自我意识</span>
+                <span>从依赖外部判断，到自我驱动，再到容纳多重视角</span>
+              </div>
+              <div class="assessment-row" role="row">
+                <span>Body 身体</span>
+                <span>健康、睡眠、运动、精力、恢复</span>
+                <span>从无意识到稳定管理，再到按目标主动优化</span>
+              </div>
+              <div class="assessment-row" role="row">
+                <span>Spirit 精神</span>
+                <span>关系、意义、家庭、社区、方向</span>
+                <span>从外部归属，到个人意义，再到贡献和连接</span>
+              </div>
+              <div class="assessment-row" role="row">
+                <span>Vocation 事业</span>
+                <span>工作、收入、技能、系统、价值</span>
+                <span>从出售时间，到建立能力，再到系统化和创造价值</span>
+              </div>
+            </div>
+          </section>
+
+          <section id="diagnosis" class="content-block diagnosis-block">
+            <p class="block-label">内容层 4</p>
+            <h3>诊断原则</h3>
+            <p class="statement">
+              不要同时解决所有问题。先找那个一旦解决，就能带动其他象限的主要约束。
+            </p>
+            <div class="diagnosis-grid">
+              <div>
+                <h4>看证据</h4>
+                <ul>
+                  <li>以实际行为和时间分配为准。</li>
+                  <li>不只记录愿望，也记录代价。</li>
+                  <li>寻找反复出现的模式。</li>
+                </ul>
+              </div>
+              <div>
+                <h4>找约束</h4>
+                <ul>
+                  <li>问：解决哪一件事，其他问题会变轻。</li>
+                  <li>问：哪个问题反复出现但没有被处理。</li>
+                  <li>问：哪个象限正在拖累其他三个。</li>
+                </ul>
+              </div>
+              <div>
+                <h4>做验证</h4>
+                <ul>
+                  <li>先做一个最小有效动作。</li>
+                  <li>用一个可观察指标判断是否有效。</li>
+                  <li>根据结果调整，而不是靠情绪改方向。</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section id="strategy" class="content-block">
+            <p class="block-label">内容层 5</p>
+            <h3>四象限如何协同</h3>
+            <p>
+              一个象限的变化会影响其他象限。真正有效的人生规划，不是把四个领域平均分配，
+              而是找到当前最关键的连接点。
+            </p>
+            <div class="engine-grid">
+              <article>
+                <span>Mind</span>
+                <h4>清晰驱动行动</h4>
+                <p>能识别情绪和信念，才能做出更稳定的选择。</p>
+              </article>
+              <article>
+                <span>Body</span>
+                <h4>身体提供能量</h4>
+                <p>睡眠、运动和恢复决定其他象限能走多远。</p>
+              </article>
+              <article>
+                <span>Spirit</span>
+                <h4>意义维持方向</h4>
+                <p>关系和价值感决定你是否愿意长期投入。</p>
+              </article>
+            </div>
+            <article class="highlight-band">
+              <strong>Vocation</strong>
+              <p>把能力转化为价值、资源、系统和更持久的影响力。</p>
+            </article>
+          </section>
+
+          <section id="execution" class="content-block">
+            <p class="block-label">内容层 6</p>
+            <h3>如何把报告变成行动</h3>
+            <ol class="timeline">
+              <li>
+                <strong>前 30 天</strong>
+                <span>只处理一个主要约束，每天做一个最小动作，每周记录一次证据。</span>
+              </li>
+              <li>
+                <strong>90 天</strong>
+                <span>验证新行为是否有效，建立稳定节奏，调整目标和环境。</span>
+              </li>
+              <li>
+                <strong>6 到 12 个月</strong>
+                <span>把有效做法系统化，让健康、关系、工作和意义互相支撑。</span>
+              </li>
+              <li>
+                <strong>1 到 3 年</strong>
+                <span>形成长期方向、持续贡献和更稳定的生活结构。</span>
+              </li>
+            </ol>
+            <p class="file-links">
+              <a href="01-human3-prompt.txt">下载继续追问 AI 的提示词</a>
+            </p>
+          </section>
+
+          <section id="review" class="content-block">
+            <p class="block-label">内容层 7</p>
+            <h3>如何每周复盘</h3>
+            <ol class="review-list">
+              <li>本周哪个象限出现了最明显的变化。</li>
+              <li>有什么行为证据，而不只是感觉。</li>
+              <li>主要约束是否发生了变化。</li>
+              <li>我这周最明显回避了什么。</li>
+              <li>下周最小有效动作是什么。</li>
+              <li>我需要什么支持或环境调整。</li>
+            </ol>
+          </section>
+
+          <section id="sources" class="content-block sources-block">
+            <p class="block-label">来源与资源</p>
+            <h3>原文和文件</h3>
+            <p>
+              本页只保存摘要和行动翻译。完整原文请看 Dan Koe 官方文章。
+            </p>
+            <div class="source-links">
+              <a href="https://thedankoe.com/letters/human-3-0-a-map-to-reach-the-top-1/" target="_blank" rel="noreferrer">
+                HUMAN 3.0 - A Map To Reach The Top 1%
+              </a>
+              <a href="https://thedankoe.com/letters/a-complete-knowledge-base-of-human-3-0/" target="_blank" rel="noreferrer">
+                A Complete Knowledge Base Of HUMAN 3.0
+              </a>
+              <a href="https://github.com/chiisen/HUMAN3_PROMPT" target="_blank" rel="noreferrer">
+                GitHub 第三方实现参考
+              </a>
+              <a href="01-human3-prompt.txt">下载测试提示词</a>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Human 3.0 本地测试与执行系统。答案不离开你的浏览器，除非你主动复制或导出。</p>
+    </footer>
+  </body>
+</html>
